@@ -22,6 +22,7 @@ var controller = {
     project.langs = params.langs;
     project.image = null;
 
+    //guarda y comprueba el resultado
     project.save((err, projectStored) => {
       if (err) {
         return res.status(500).send({ message: 'Error al guardar' });
@@ -32,11 +33,13 @@ var controller = {
           .send({ message: 'No se ha podido guardar el proyecto' });
       }
 
+      //si esta bien lo muestra
       return res.status(200).send({ project: projectStored });
     });
   },
 
   getProject: function (req, res) {
+    //coge la id que pasas en la url y la busca
     var projectId = req.params.id;
 
     if (projectId == null) {
@@ -53,6 +56,22 @@ var controller = {
 
       return res.status(200).send({ project });
     });
+  },
+
+  getProjects: function (req, res) {
+    Project.find({})
+      .sort('+year')
+      .exec((err, proyects) => {
+        if (err) {
+          return res
+            .status(500)
+            .send({ message: 'Error al devolver los datos' });
+        }
+        if (!proyects) {
+          return res.status(404).send({ message: 'Los proyetos no existen' });
+        }
+        return res.status(200).send({ proyects });
+      });
   },
 };
 

@@ -6,5 +6,6 @@ router.get('/home', ProjectConstroller.home);
 router.post('/test', ProjectConstroller.test);
 router.post('/save-project', ProjectConstroller.saveProject);
 router.get('/project/:id?', ProjectConstroller.getProject);
+router.get('/projects', ProjectConstroller.getProjects);
 
 module.exports = router;
