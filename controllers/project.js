@@ -1,4 +1,5 @@
 var Project = require('../models/project');
+var fs = require('fs');
 
 var controller = {
   home: function (req, res) {
@@ -114,28 +115,38 @@ var controller = {
     var fileName = 'Imagen no subida';
 
     if (req.files) {
-      // sacamos la ruta y de ahi sacamos el nombre del archivo
+      //sacamos la ruta y de ahi sacamos el nombre del archivo
       var fileParh = req.files.image.path;
       var fileSplit = fileParh.split('\\');
       var fileName = fileSplit[1];
 
-      Project.findByIdAndUpdate(
-        projectId,
-        { image: fileName },
-        { new: true },
-        (err, projectUpdated) => {
-          if (err) {
-            return res.status(500).send({ message: 'Error al actualizar' });
-          }
-          if (!projectUpdated) {
-            return res.status(404).send({ message: 'El proyeto no existe' });
-          }
+      //comprobar la extension del archivo
+      var extensionSplit = fileName.split('.');
+      var fileExtension = extensionSplit[1];
 
-          return res.status(200).send({
-            project: projectUpdated,
-          });
-        }
-      );
+      if (fileExtension == 'png' || fileExtension == 'jpg') {
+        Project.findByIdAndUpdate(
+          projectId,
+          { image: fileName },
+          { new: true },
+          (err, projectUpdated) => {
+            if (err) {
+              return res.status(500).send({ message: 'Error al actualizar' });
+            }
+            if (!projectUpdated) {
+              return res.status(404).send({ message: 'El proyeto no existe' });
+            }
+
+            return res.status(200).send({
+              project: projectUpdated,
+            });
+          }
+        );
+      } else {
+        fs.unlink(fileParh, (err) => {
+          return res.status(200).send({ message: 'La extension no es valida' });
+        });
+      }
     }
   },
 };
