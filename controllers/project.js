@@ -59,7 +59,7 @@ var controller = {
   },
 
   getProjects: function (req, res) {
-    Project.find({})
+    Project.find({}) //sacamos todos los proyectos con find y ordenamos por ano
       .sort('+year')
       .exec((err, proyects) => {
         if (err) {
@@ -72,6 +72,28 @@ var controller = {
         }
         return res.status(200).send({ proyects });
       });
+  },
+  updateProject: function (req, res) {
+    //buscamos por id y reemplazamos con contenido nuevo
+    var projectId = req.params.id;
+    var update = req.body;
+
+    //{new:true} es para que devuelva el objeto modificado
+    Project.findByIdAndUpdate(
+      projectId,
+      update,
+      { new: true },
+      (err, projectUpdated) => {
+        if (err) {
+          return res.status(500).send({ message: 'Error al actualizar' });
+        }
+        if (!projectUpdated) {
+          return res.status(404).send({ message: 'El proyeto no existe' });
+        }
+
+        return res.status(200).send({ project: projectUpdated });
+      }
+    );
   },
 };
 
