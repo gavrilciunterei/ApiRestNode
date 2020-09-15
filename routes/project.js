@@ -8,5 +8,6 @@ router.post('/save-project', ProjectConstroller.saveProject);
 router.get('/project/:id?', ProjectConstroller.getProject);
 router.get('/projects', ProjectConstroller.getProjects);
 router.put('/project/:id', ProjectConstroller.updateProject);
+router.delete('/project/:id', ProjectConstroller.deleteProject);
 
 module.exports = router;

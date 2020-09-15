@@ -95,6 +95,20 @@ var controller = {
       }
     );
   },
+  deleteProject: function (req, res) {
+    var projectId = req.params.id;
+    //si no va es findByIdAndRemove
+    Project.findByIdAndDelete(projectId, (err, projectDeleted) => {
+      if (err) {
+        return res.status(500).send({ message: 'Error al actualizar' });
+      }
+      if (!projectDeleted) {
+        return res.status(404).send({ message: 'El proyeto no existe' });
+      }
+
+      return res.status(200).send({ project: projectDeleted });
+    });
+  },
 };
 
 module.exports = controller;
