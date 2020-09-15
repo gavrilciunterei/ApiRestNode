@@ -109,6 +109,35 @@ var controller = {
       return res.status(200).send({ project: projectDeleted });
     });
   },
+  uploadImage: function (req, res) {
+    var projectId = req.params.id;
+    var fileName = 'Imagen no subida';
+
+    if (req.files) {
+      // sacamos la ruta y de ahi sacamos el nombre del archivo
+      var fileParh = req.files.image.path;
+      var fileSplit = fileParh.split('\\');
+      var fileName = fileSplit[1];
+
+      Project.findByIdAndUpdate(
+        projectId,
+        { image: fileName },
+        { new: true },
+        (err, projectUpdated) => {
+          if (err) {
+            return res.status(500).send({ message: 'Error al actualizar' });
+          }
+          if (!projectUpdated) {
+            return res.status(404).send({ message: 'El proyeto no existe' });
+          }
+
+          return res.status(200).send({
+            project: projectUpdated,
+          });
+        }
+      );
+    }
+  },
 };
 
 module.exports = controller;
